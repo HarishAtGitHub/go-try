@@ -2,12 +2,15 @@ package main
 
 import (
    "fmt"
+   "flag"
    "github.com/aws/aws-sdk-go/aws"
    aws_session "github.com/aws/aws-sdk-go/aws/session"
    "github.com/aws/aws-sdk-go/service/sqs"
 )
 
 func main() {
+    var timeout int64
+    flag.Int64Var(&timeout, "t", 20, "(Optional) Timeout in seconds for long polling")
     sess := aws_session.Must(aws_session.NewSession())
     svc := sqs.New(sess)
     // get gueue url from queue name and account ID
@@ -19,7 +22,7 @@ func main() {
         })
     qURL := *queueUrlOutput.QueueUrl
 
-    // get queue message
+    // get queue messages in bulk
     result, err := svc.ReceiveMessage(&sqs.ReceiveMessageInput{
         AttributeNames: []*string{
             aws.String(sqs.MessageSystemAttributeNameSentTimestamp),
@@ -29,8 +32,8 @@ func main() {
         },
         QueueUrl:            &qURL,
         MaxNumberOfMessages: aws.Int64(10),
-        VisibilityTimeout:   aws.Int64(36000),  // 10 hours
-        WaitTimeSeconds:     aws.Int64(0),
+        VisibilityTimeout:   aws.Int64(4),  // 10 hours
+        WaitTimeSeconds:     aws.Int64(timeout),
     })
 
     if err != nil {
@@ -44,5 +47,6 @@ func main() {
     }
     fmt.Println(result)
 
-   // get queue bulk messages
+   // delete messages in bulk
+   
 }
