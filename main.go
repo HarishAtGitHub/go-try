@@ -75,5 +75,5 @@ func main() {
 			aws.String(sqs.QueueAttributeNameApproximateNumberOfMessages),
 		},
 	})
-	fmt.Println(*attributes.Attributes["ApproximateNumberOfMessages"])
+	fmt.Println(*attributes.Attributes[sqs.QueueAttributeNameApproximateNumberOfMessages])
 }
