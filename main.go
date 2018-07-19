@@ -5,7 +5,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	aws_session "github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
-	"strconv"
 )
 
 func main() {
@@ -73,13 +72,8 @@ func main() {
 	attributes, err := svc.GetQueueAttributes(&sqs.GetQueueAttributesInput{
 		QueueUrl: &qURL,
 		AttributeNames: []*string{
-			aws.String("All"),
+			aws.String("ApproximateNumberOfMessages"),
 		},
 	})
-	for attrib, _ := range attributes.Attributes {
-		prop := attributes.Attributes[attrib]
-		i, _ := strconv.Atoi(*prop)
-		fmt.Println(attrib, i)
-	}
 	fmt.Println(*attributes.Attributes["ApproximateNumberOfMessages"])
 }
