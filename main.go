@@ -72,7 +72,7 @@ func main() {
 	attributes, err := svc.GetQueueAttributes(&sqs.GetQueueAttributesInput{
 		QueueUrl: &qURL,
 		AttributeNames: []*string{
-			aws.String("ApproximateNumberOfMessages"),
+			aws.String(sqs.QueueAttributeNameApproximateNumberOfMessages),
 		},
 	})
 	fmt.Println(*attributes.Attributes["ApproximateNumberOfMessages"])
