@@ -2,15 +2,13 @@ package main
 
 import (
    "fmt"
-   "flag"
    "github.com/aws/aws-sdk-go/aws"
    aws_session "github.com/aws/aws-sdk-go/aws/session"
    "github.com/aws/aws-sdk-go/service/sqs"
 )
 
 func main() {
-    var timeout int64
-    flag.Int64Var(&timeout, "t", 20, "(Optional) Timeout in seconds for long polling")
+    var timeout int64 = 20
     fmt.Println(timeout)
     sess := aws_session.Must(aws_session.NewSession())
     svc := sqs.New(sess)
