@@ -11,6 +11,7 @@ import (
 func main() {
     var timeout int64
     flag.Int64Var(&timeout, "t", 20, "(Optional) Timeout in seconds for long polling")
+    fmt.Println(timeout)
     sess := aws_session.Must(aws_session.NewSession())
     svc := sqs.New(sess)
     // get gueue url from queue name and account ID
@@ -32,7 +33,7 @@ func main() {
         },
         QueueUrl:            &qURL,
         MaxNumberOfMessages: aws.Int64(10),
-        VisibilityTimeout:   aws.Int64(4),  // 10 hours
+        VisibilityTimeout:   aws.Int64(4),
         WaitTimeSeconds:     aws.Int64(timeout),
     })
 
@@ -45,8 +46,13 @@ func main() {
         fmt.Println("Received no messages")
         return
     }
-    fmt.Println(result)
+    //fmt.Println(result.Messages)
 
    // delete messages in bulk
-   
+   receivedMessages := result.Messages
+   var receiptHandles []string 
+   for _, message := range receivedMessages {
+       receiptHandles = append(receiptHandles, *message.ReceiptHandle)
+   }
+   fmt.Println(receiptHandles) 
 }
