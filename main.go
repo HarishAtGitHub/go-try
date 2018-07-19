@@ -50,9 +50,26 @@ func main() {
 
    // delete messages in bulk
    receivedMessages := result.Messages
-   var receiptHandles []string 
+   var entries []*sqs.DeleteMessageBatchRequestEntry
    for _, message := range receivedMessages {
-       receiptHandles = append(receiptHandles, *message.ReceiptHandle)
+       // send message to hec
+       // if success full
+       entry := &sqs.DeleteMessageBatchRequestEntry{Id: message.MessageId, ReceiptHandle: message.ReceiptHandle}
+       entries = append(entries, entry)
    }
-   fmt.Println(receiptHandles) 
+
+
+   deleteParams := &sqs.DeleteMessageBatchInput{
+       Entries:  entries,
+       QueueUrl: aws.String(qURL),
+   }
+
+   deleteResp, err := svc.DeleteMessageBatch(deleteParams)
+   if err != nil {
+       fmt.Println(err.Error())
+       return
+   }
+
+   fmt.Println(deleteResp)
+
 }
